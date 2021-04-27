@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { getNewReleases, getFeaturedPlaylists, getCategories } from '../apis';
 import DiscoverBlock from './DiscoverBlock/components/DiscoverBlock';
 import '../styles/_discover.scss';
 
@@ -12,6 +13,19 @@ export default class Discover extends Component {
       categories: []
     };
   }
+
+  componentDidMount = async () => {
+    // Wait for each api part
+    await this.getData('newReleases', getNewReleases);
+    await this.getData('playlists', getFeaturedPlaylists);
+    await this.getData('categories', getCategories);
+  };
+
+  getData = (key, fetchFunction) => {
+    return new Promise(async resolve => {
+      this.setState({ [key]: await fetchFunction() }, resolve);
+    })
+  };
 
   render() {
     const { newReleases, playlists, categories } = this.state;
